@@ -1,0 +1,57 @@
+<?php
+session_start();
+
+require 'admin/root.php';
+$search_products = isset($_POST['search']) ? trim($_POST['search']) : '';
+
+if($search_products == ''){
+    $search_products = '###';
+}
+
+// Sử dụng prepared statement để tránh SQL Injection
+$sql = "SELECT products.*, brands.brand_name 
+        FROM products 
+        LEFT JOIN brands ON brands.brand_id = products.brand_id
+        WHERE product_name LIKE ?";
+$stmt = mysqli_prepare($connect, $sql);
+$search_param = "%{$search_products}%";
+mysqli_stmt_bind_param($stmt, "s", $search_param);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm kiếm sản phẩm</title>
+    <link rel="stylesheet" href="./public/css/rss.css" />
+    <link rel="stylesheet" href="./public/css/style.css" />
+    <link rel="stylesheet" href="./public/css/view_all.css" />
+    <link rel="stylesheet" href="./public/css/comments.css" />
+    <link rel="stylesheet" href="./public/css/breadcrumb.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        
+        <?php include './detail/detail_search.php'?>
+        <?php include './partials/footer.php' ?>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script src="./public/js/js.js"></script>
+    <script src="./public/js/slider.js"></script>
+    <script src="./public/js/live-searchs.js"></script>
+</body>
+
+</html>

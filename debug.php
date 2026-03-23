@@ -1,0 +1,1 @@
+<?php $connect = mysqli_connect("localhost", "root", "", "eyeglasses_shop"); if (!$connect) { die("Không thể kết nối: " . mysqli_connect_error()); } $sql = "SELECT * FROM products LIMIT 1"; $result = mysqli_query($connect, $sql); $row = mysqli_fetch_assoc($result); echo "<pre>"; print_r($row); echo "</pre>"; mysqli_close($connect); ?>
